@@ -21,7 +21,7 @@ class Settings:
 
     # ── Provider switches ────────────────────────────────────────────────
     # Change ONLY these to swap vendors — nothing else in the codebase changes
-    TELEPHONY_PROVIDER: str = os.getenv("TELEPHONY_PROVIDER", "exotel")
+    TELEPHONY_PROVIDER: str = os.getenv("TELEPHONY_PROVIDER", "twilio")
     STT_PROVIDER: str       = os.getenv("STT_PROVIDER",       "deepgram")
     TTS_PROVIDER: str       = os.getenv("TTS_PROVIDER",       "edge")
     AI_PROVIDER: str        = os.getenv("AI_PROVIDER",        "groq")

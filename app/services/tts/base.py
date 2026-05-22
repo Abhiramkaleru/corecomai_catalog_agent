@@ -330,8 +330,6 @@ class EdgeTTSProvider(TTSProvider):
     async def synthesize(self, text: str, language_code: str = "en") -> bytes:
         import edge_tts
         import io
-        import audioop
-
         if not text or not text.strip():
             return b""
 
