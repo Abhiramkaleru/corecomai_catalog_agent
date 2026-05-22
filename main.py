@@ -67,7 +67,7 @@ def health():
         },
     }
 @app.get("/", tags=["Welcome"])
-def health():
+def rootcheck():
     return {
         "status":    "ok",
     }
