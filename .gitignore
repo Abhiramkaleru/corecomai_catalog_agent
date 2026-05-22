@@ -1,0 +1,59 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+.env.*
+
+# FastAPI / Uvicorn
+*.log
+
+# Database
+*.sqlite3
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Pytest
+.pytest_cache/
+
+# Mypy
+.mypy_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Uploads / media
+uploads/
+media/
+
+# Temporary files
+tmp/
+temp/
+
+# Alembic migrations cache
+alembic/__pycache__/
+
+# Docker
+docker-compose.override.yml
+
+# Node modules (if frontend included)
+node_modules/
