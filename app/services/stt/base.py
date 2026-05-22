@@ -15,6 +15,21 @@ from app.core.config import settings
 TranscriptCallback = Callable[[str, str, bool, float, list], Awaitable[None]]
 # call_sid, text, is_final, confidence, languages
 
+import numpy as np
+
+def ulaw_to_pcm16(audio_bytes: bytes) -> bytes:
+    u = np.frombuffer(audio_bytes, dtype=np.uint8)
+
+    u = ~u & 0xFF
+    sign = u & 0x80
+    exponent = (u >> 4) & 0x07
+    mantissa = u & 0x0F
+
+    sample = ((mantissa << 3) + 0x84) << exponent
+    sample = sample - 0x84
+    sample = np.where(sign, -sample, sample)
+
+    return sample.astype(np.int16).tobytes()
 
 class STTSession(ABC):
     @abstractmethod
@@ -159,8 +174,9 @@ class WhisperSession(STTSession):
 
     async def send_audio(self, audio_bytes: bytes) -> None:
         # Convert mulaw → PCM16 before buffering
-        import audioop
-        pcm = audioop.ulaw2lin(audio_bytes, 2)
+        # import audioop
+        # pcm = audioop.ulaw2lin(audio_bytes, 2)
+        pcm = ulaw_to_pcm16(audio_bytes)
         self._audio_buffer.extend(pcm)
 
     async def close(self) -> None:

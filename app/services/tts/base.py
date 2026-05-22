@@ -11,7 +11,7 @@ expects. PCM → mulaw conversion is done via Python stdlib `audioop`.
 
 from __future__ import annotations
 
-import audioop
+# import audioop
 import logging
 from abc import ABC, abstractmethod
 
@@ -22,17 +22,33 @@ log = logging.getLogger(__name__)
 
 # ── PCM helpers ────────────────────────────────────────────────────────────────
 
+# def _pcm16_to_mulaw(pcm_bytes: bytes) -> bytes:
+#     """Convert raw 16-bit little-endian PCM (8 kHz mono) → mulaw 8 kHz."""
+#     return audioop.lin2ulaw(pcm_bytes, 2)
+
+import numpy as np
+
 def _pcm16_to_mulaw(pcm_bytes: bytes) -> bytes:
-    """Convert raw 16-bit little-endian PCM (8 kHz mono) → mulaw 8 kHz."""
-    return audioop.lin2ulaw(pcm_bytes, 2)
+    pcm = np.frombuffer(pcm_bytes, dtype=np.int16)
 
+    mu = 255.0
 
-def _resample_to_8k(pcm_bytes: bytes, src_rate: int) -> bytes:
-    """Downsample 16-bit PCM from src_rate → 8000 Hz."""
-    if src_rate == 8000:
-        return pcm_bytes
-    resampled, _ = audioop.ratecv(pcm_bytes, 2, 1, src_rate, 8000, None)
-    return resampled
+    # normalize to [-1, 1]
+    pcm = pcm.astype(np.float32) / 32768.0
+
+    # mu-law compression
+    magnitude = np.log1p(mu * np.abs(pcm)) / np.log1p(mu)
+    signal = np.sign(pcm) * magnitude
+
+    # back to 8-bit unsigned
+    return ((signal + 1) * 127.5).astype(np.uint8).tobytes()
+
+# def _resample_to_8k(pcm_bytes: bytes, src_rate: int) -> bytes:
+#     """Downsample 16-bit PCM from src_rate → 8000 Hz."""
+#     if src_rate == 8000:
+#         return pcm_bytes
+#     resampled, _ = audioop.ratecv(pcm_bytes, 2, 1, src_rate, 8000, None)
+#     return resampled
 
 
 async def _mp3_to_mulaw(mp3_bytes: bytes) -> bytes:
