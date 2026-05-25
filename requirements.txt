@@ -1,5 +1,5 @@
 boto3==1.43.13
-edge_tts==6.1.12
+edge-tts==7.0.2
 fastapi==0.136.1
 faster_whisper==1.2.1
 groq==1.2.0
